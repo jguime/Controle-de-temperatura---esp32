@@ -1,4 +1,4 @@
-/*=====CONTROLADOR DE TEMPERATURA COM MULTSPEED=========*/ 
+/*=====CONTROLE DE TEMPERATURA COM MULTSPEED=========*/ 
 /* =====================================================*/
 /*  Desenvolvido em prol do GRAND PRIX - OBOTICARIO     */
 /*  Por: JOAO GUILHERME. - ESTUDANTE DE AUTOMAÇÃO/ADS   */ 
