@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Phudu:wght@300&display=swap" rel="stylesheet">
+    <title>Temperatura</title>
+    <style>
+      body {
+    background-image: url('oboticario-bg.jpg'); /* mudar para cores/gradiente */
+    background-size: cover;
+    background-position: center;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+  }
+
+  #header {
+    padding: 20px;
+    text-align: center;
+    font-family: 'Phudu', cursive;
+    font-size: 30px;
+  }
+  #temperature {
+    margin-top: 50px;
+    text-align: center;
+    font-size: 100px;
+    font-weight: bold;
+  }
+  canvas{
+        max-width: 100%;
+        max-height: 60%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header">Gráfico de Temperatura</div>
+    <div id="temperature">--</div>
+    <button onclick="updateTemperature()">atualizar temp</button>
+    <canvas id="chart"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      var labels = [];
+      var data = [];
+
+          var chart = new Chart('chart', {
+      type: 'line',
+      data: {
+          labels: labels,
+          datasets: [{
+            label: 'Temperatura',
+            data: data,
+            borderColor: '#160d18', // cinza claro
+            borderWidth: 3,
+            fill: true,
+            backgroundColor: 'rgba(0, 0, 2, 0.1)', // preto transparente
+          }]
+      },
+      options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          title: {
+            display: true,
+            text: 'Variação da temperatura ao longo do tempo',
+            fontSize: 20,
+            fontColor: '#D9D9D9', // cinza claro
+          },
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                fontColor: '#D9D9D9', // cinza claro
+            }
+          },
+          scales: {
+            yAxes: [{
+                ticks: {
+                  beginAtZero: true,
+                  fontFamily: 'Arial',
+                  fontColor: '#D9D9D9', // cinza claro
+                },
+                gridLines: {
+                  color: '#555555', // cinza médio
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                  fontFamily: 'Arial',
+                  fontColor: '#D9D9D9', // cinza claro
+                },
+                gridLines: {
+                  color: '#555555', // cinza médio
+                }
+            }]
+          },
+          elements: {
+            line: {
+                tension: 0.4, // deixa a linha menos curva
+            },
+            point: {
+                radius: 0, // remove os pontos no gráfico
+            }
+          },
+          layout: {
+            padding: {
+                top: 10,
+                right: 10,
+                bottom: 10,
+                left: 10,
+            }
+          },
+          plugins: {
+            title: {
+                display: false,
+            },
+            filler: {
+                propagate: true,
+            },
+            legend: {
+                labels: {
+                  color: '#D9D9D9', // cinza claro
+                }
+            }
+          },
+          backgroundColor: '#222222', // cor de fundo
+      }
+    });
+
+
+
+      function updateTemperature() {
+        fetch('/temperature')
+          .then(response => response.text())
+          .then(temperature => {
+            document.getElementById("temperature").innerHTML = temperature + "°C";
+
+            labels.push(new Date().toLocaleTimeString());
+            data.push(temperature);
+
+            if (labels.length > 20) {
+              labels.shift();
+              data.shift();
+            }
+
+            chart.update();
+          })
+          .catch(error => {
+            console.error('Erro ao atualizar a temperatura:', error);
+          });
+      }
+
+
+      setInterval(updateTemperature, 1000);
+    </script>
+  </body>
+</html>
